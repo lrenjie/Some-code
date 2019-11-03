@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+#include<windows.h>
+#include<conio.h>
+using namespace std;
+int main()
+{
+begin:
+    char c;
+    int n,d=0;
+    double time_now,time_end;
+    cout<<"How many times do you want:";
+    cin>>n;
+    cout<<"Start!";
+    c=getch();
+    bool zuobi=0;
+    time_now=(double)clock()/CLOCKS_PER_SEC;
+    for(int i=0;i<n-1;i++)
+    {
+        if(getch()==c)d++;
+        else
+        {
+            zuobi=1;
+            cout<<"...";
+            break;
+        }
+    }
+    if(!zuobi)
+    {
+        time_end=(double)clock()/CLOCKS_PER_SEC;
+        cout<<"time:"<<time_end-time_now<<'s'<<endl;
+        cout<<"speed:"<<n/(time_end-time_now)<<"/s";
+    }
+    Sleep(5000);
+    return 0;
+}
