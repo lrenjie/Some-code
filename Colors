@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+#include<windows.h>
+#include<conio.h>
+COORD get_font_size()
+{
+    COORD font_size;
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    struct CONSOLE_FONT
+    {
+        DWORD index;
+        COORD dim;
+    } cfi;
+    typedef COORD (WINAPI *PROCGETCONSOLEFONTSIZE)(HANDLE, DWORD);
+    typedef BOOL (WINAPI *PROCGETCURRENTCONSOLEFONT)(HANDLE, BOOL, struct CONSOLE_FONT*);
+
+    HMODULE hKernel32 = GetModuleHandle("kernel32");
+    PROCGETCONSOLEFONTSIZE GetConsoleFontSize = (PROCGETCONSOLEFONTSIZE)GetProcAddress(hKernel32,"GetConsoleFontSize");
+    PROCGETCURRENTCONSOLEFONT GetCurrentConsoleFont = (PROCGETCURRENTCONSOLEFONT)GetProcAddress(hKernel32,"GetCurrentConsoleFont");
+
+    GetCurrentConsoleFont(handle, FALSE, &cfi);
+    font_size = GetConsoleFontSize(handle, cfi.index);
+    return font_size;
+}
+
+void full_screen()
+{
+    HWND hwnd = GetForegroundWindow();
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    int cx = GetSystemMetrics(SM_CXSCREEN);
+    int cy = GetSystemMetrics(SM_CYSCREEN);
+
+    COORD size = get_font_size();
+    char cmd[32] = { 0 };
+    sprintf(cmd, "MODE CON: COLS=%d LINES=%d", cx / size.X, cy / size.Y);
+    system(cmd);
+    SetWindowPos(hwnd, HWND_TOP, 0, 0, cx, cy, 0);
+}
+using namespace std;
+int main()
+{
+    full_screen();
+    srand(time(0));
+    while(1)
+    {
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),rand()%144);
+        putchar(rand()%207+50);
+    }
+}
